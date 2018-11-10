@@ -120,7 +120,7 @@ class _BackdropState extends State<Backdrop>
 
          FlatButton(
            // onPressed: _signOut,
-            child: new Text('Logout',
+            child: new Text('Salir',
                 style: new TextStyle(fontSize: 17.0, color: Colors.white))),
         IconButton(
           icon: Icon(
