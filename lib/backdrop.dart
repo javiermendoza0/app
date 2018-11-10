@@ -125,10 +125,10 @@ class _BackdropState extends State<Backdrop>
         IconButton(
           icon: Icon(
             Icons.search,
-            semanticLabel: 'search',
+            semanticLabel: 'buscar',
           ),
           onPressed: () {
-            print('Search button');
+            print('Ha presionado el boton buscar');
           },
         ),
       ],
