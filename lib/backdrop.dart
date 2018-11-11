@@ -3,7 +3,6 @@ import 'package:meta/meta.dart';
 import 'model/product.dart';
 import 'auth.dart';
 import 'colores.dart';
-import 'login_page.dart';
 
 // TODO: Add velocity constant (104)
 const double _kFlingVelocity = 2.0;
