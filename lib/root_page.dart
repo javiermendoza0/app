@@ -67,7 +67,7 @@ class _RootPageState extends State<RootPage> {
             currentCategory: _currentCategory,
             onCategoryTap: _onCategoryTap,
           ),
-          frontTitle: Text('App'),
+          frontTitle: Text('Master App'),
           backTitle: Text('Categorias'),
         ); /*HomePage(
             auth: widget.auth,
