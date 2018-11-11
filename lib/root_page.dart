@@ -3,8 +3,8 @@ import 'auth.dart';
 import 'login_page.dart';
 import 'home_page.dart';
 import 'backdrop.dart';
-import 'colores.dart';
 import 'model/product.dart';
+import 'category_menu_page.dart';
 
 class RootPage extends StatefulWidget {
   RootPage({Key key, this.auth}) : super(key: key);
@@ -21,6 +21,13 @@ enum AuthStatus {
 
 class _RootPageState extends State<RootPage> {
   AuthStatus authStatus = AuthStatus.notSignedIn;
+  Category _currentCategory = Category.all;
+
+  void _onCategoryTap(Category category) {
+    setState(() {
+      _currentCategory = category;
+    });
+  }
 
   initState() {
     super.initState();
@@ -49,15 +56,19 @@ class _RootPageState extends State<RootPage> {
         );
       case AuthStatus.signedIn:
         return Backdrop(
+          auth: widget.auth,
+          onSignOut: () => _updateAuthStatus(AuthStatus.notSignedIn),
           // TODO: Make currentCategory field take _currentCategory (104)
-          currentCategory: Category.all,
+          currentCategory: _currentCategory,
           // TODO: Pass _currentCategory for frontLayer (104)
-          frontLayer: HomePage(auth: widget.auth,
-              onSignOut: () => _updateAuthStatus(AuthStatus.notSignedIn)),
+          frontLayer: HomePage(category: _currentCategory),
           // TODO: Change backLayer field value to CategoryMenuPage (104)
-          backLayer: Container(color: kShrinePink100),
-          frontTitle: Text('SHRINE'),
-          backTitle: Text('MENU'),
+          backLayer:  CategoryMenuPage(
+            currentCategory: _currentCategory,
+            onCategoryTap: _onCategoryTap,
+          ),
+          frontTitle: Text('App'),
+          backTitle: Text('Categorias'),
         ); /*HomePage(
             auth: widget.auth,
             onSignOut: () => _updateAuthStatus(AuthStatus.notSignedIn));*/

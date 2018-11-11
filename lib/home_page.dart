@@ -6,22 +6,14 @@ import 'model/product.dart';
 import 'supplemental/asymmetric_view.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({this.auth, this.onSignOut});
-  final BaseAuth auth;
-  final VoidCallback onSignOut;
+  HomePage({this.category: Category.all});
+
+  // TODO: Add a variable for Category (104)
+  final Category category;
 
   @override
   Widget build(BuildContext context) {
-    void _signOut() async {
-      try {
-        await auth.signOut();
-        onSignOut();
-      } catch (e) {
-        print(e);
-      }
-    }
-
-    return   AsymmetricView(products: ProductsRepository.loadProducts(Category.all));/* Scaffold(
+    return   AsymmetricView(products: ProductsRepository.loadProducts(category));/* Scaffold(
       appBar: new AppBar(
       //  brightness: Brightness.dark,
       brightness: Brightness.light,

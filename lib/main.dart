@@ -24,6 +24,7 @@ ThemeData _buildShrineTheme() {
   //final ThemeData base = ThemeData.light();
   final ThemeData base = ThemeData.dark();
   return base.copyWith(
+    //Otro Tema
     /*accentColor: kShrineAltDarkGrey,
     primaryColor: kShrineAltDarkGrey,
     buttonColor: kShrineAltYellow,
@@ -54,6 +55,7 @@ ThemeData _buildShrineTheme() {
     // TODO: Decorate the inputs (103)
   );
 }
+//Otro tema
 /*
 TextTheme _buildShrineTextTheme(TextTheme base) {
   return base.copyWith(

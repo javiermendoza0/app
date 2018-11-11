@@ -17,6 +17,7 @@ dependencies:
   shrine_images: 1.0.0
   meta: ^1.1.6
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -33,6 +34,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/slanted_menu.png
     - assets/diamond.png
     - packages/shrine_images/0-0.jpg
     - packages/shrine_images/1-0.jpg

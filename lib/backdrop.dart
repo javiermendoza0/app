@@ -1,13 +1,15 @@
-
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'model/product.dart';
 import 'auth.dart';
 import 'colores.dart';
+import 'login_page.dart';
+
 // TODO: Add velocity constant (104)
 const double _kFlingVelocity = 2.0;
 
 class Backdrop extends StatefulWidget {
+
   final BaseAuth auth;
   final VoidCallback onSignOut;
   final Category currentCategory;
@@ -29,18 +31,32 @@ class Backdrop extends StatefulWidget {
         assert(backTitle != null);
 
   @override
-  _BackdropState createState() => _BackdropState();
-
-
+  _BackdropState createState() => _BackdropState(auth: this.auth,onSignOut: this.onSignOut);
 }
 
 // TODO: Add _BackdropState class (104)
 class _BackdropState extends State<Backdrop>
     with SingleTickerProviderStateMixin {
-  final GlobalKey _backdropKey = GlobalKey(debugLabel: 'Backdrop');
+  _BackdropState({this.auth, this.onSignOut});
 
+  final GlobalKey _backdropKey = GlobalKey(debugLabel: 'Backdrop');
+  final BaseAuth auth;
+  final VoidCallback onSignOut;
   // TODO: Add AnimationController widget (104)
+
   AnimationController _controller;
+
+  // TODO: Add override for didUpdateWidget() (104)
+  @override
+  void didUpdateWidget(Backdrop old) {
+    super.didUpdateWidget(old);
+
+    if (widget.currentCategory != old.currentCategory) {
+      _toggleBackdropLayerVisibility();
+    } else if (!_frontLayerVisible) {
+      _controller.fling(velocity: _kFlingVelocity);
+    }
+  }
 
   @override
   void initState() {
@@ -52,13 +68,12 @@ class _BackdropState extends State<Backdrop>
     );
   }
 
-  // TODO: Add override for didUpdateWidget (104)
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
+
   // TODO: Add functions to get and change front layer visibility (104)
   bool get _frontLayerVisible {
     final AnimationStatus status = _controller.status;
@@ -96,39 +111,51 @@ class _BackdropState extends State<Backdrop>
           rect: layerAnimation,
           child: _FrontLayer(
             // TODO: Implement onTap property on _BackdropState (104)
+            onTap: _toggleBackdropLayerVisibility,
             child: widget.frontLayer,
-
           ),
         ),
       ],
     );
   }
+
   @override
   Widget build(BuildContext context) {
-
-    var appBar =AppBar(
+    void _signOut() async {
+      try {
+        await auth.signOut();
+        onSignOut();
+      } catch (e) {
+        print(e);
+      }
+    }
+    var appBar = AppBar(
       //  brightness: Brightness.dark,
       brightness: Brightness.light,
       elevation: 0.0,
-      title: Text('Home'),
-      leading: IconButton(
-        icon: Icon(Icons.menu),
-        onPressed: _toggleBackdropLayerVisibility,
+      // TODO: Create title with _BackdropTitle parameter (104)
+      title: _BackdropTitle(
+        listenable: _controller.view,
+        onPress: _toggleBackdropLayerVisibility,
+        frontTitle: widget.frontTitle,
+        backTitle: widget.backTitle,
       ),
 
       actions: <Widget>[
-
-         FlatButton(
-           // onPressed: _signOut,
+        FlatButton(
+            onPressed: _signOut,
             child: new Text('Salir',
                 style: new TextStyle(fontSize: 17.0, color: Colors.white))),
         IconButton(
           icon: Icon(
             Icons.search,
-            semanticLabel: 'buscar',
+            semanticLabel: 'login',
           ),
           onPressed: () {
-            print('Ha presionado el boton buscar..');
+           /* Navigator.push(
+              context,
+              MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+            );*/
           },
         ),
       ],
@@ -145,9 +172,11 @@ class _FrontLayer extends StatelessWidget {
   // TODO: Add on-tap callback (104)
   const _FrontLayer({
     Key key,
+    this.onTap,
     this.child,
   }) : super(key: key);
 
+  final VoidCallback onTap;
   final Widget child;
 
   @override
@@ -156,17 +185,111 @@ class _FrontLayer extends StatelessWidget {
       color: kShrineSurfaceWhite,
       elevation: 16.0,
       shape: BeveledRectangleBorder(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(46.0),  ),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(46.0),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           // TODO: Add a GestureDetector (104)
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onTap,
+            child: Container(
+              height: 40.0,
+              alignment: AlignmentDirectional.centerStart,
+            ),
+          ),
+
           Expanded(
             child: child,
           ),
         ],
       ),
+    );
+  }
+}
+
+// TODO: Add _BackdropTitle class (104)
+class _BackdropTitle extends AnimatedWidget {
+  final Function onPress;
+  final Widget frontTitle;
+  final Widget backTitle;
+
+  const _BackdropTitle({
+    Key key,
+    Listenable listenable,
+    this.onPress,
+    @required this.frontTitle,
+    @required this.backTitle,
+  })  : assert(frontTitle != null),
+        assert(backTitle != null),
+        super(key: key, listenable: listenable);
+
+  @override
+  Widget build(BuildContext context) {
+    final Animation<double> animation = this.listenable;
+
+    return DefaultTextStyle(
+      style: Theme.of(context).primaryTextTheme.title,
+      softWrap: false,
+      overflow: TextOverflow.ellipsis,
+      child: Row(children: <Widget>[
+        // branded icon
+        SizedBox(
+          width: 72.0,
+          child: IconButton(
+            padding: EdgeInsets.only(right: 8.0),
+            onPressed: this.onPress,
+            icon: Stack(children: <Widget>[
+              Opacity(
+                opacity: animation.value,
+                child: ImageIcon(AssetImage('assets/slanted_menu.png')),
+              ),
+              FractionalTranslation(
+                translation: Tween<Offset>(
+                  begin: Offset.zero,
+                  end: Offset(1.0, 0.0),
+                ).evaluate(animation),
+                child: ImageIcon(AssetImage('assets/diamond.png')),
+              )
+            ]),
+          ),
+        ),
+        // Here, we do a custom cross fade between backTitle and frontTitle.
+        // This makes a smooth animation between the two texts.
+        Stack(
+          children: <Widget>[
+            Opacity(
+              opacity: CurvedAnimation(
+                parent: ReverseAnimation(animation),
+                curve: Interval(0.5, 1.0),
+              ).value,
+              child: FractionalTranslation(
+                translation: Tween<Offset>(
+                  begin: Offset.zero,
+                  end: Offset(0.5, 0.0),
+                ).evaluate(animation),
+                child: backTitle,
+              ),
+            ),
+            Opacity(
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Interval(0.5, 1.0),
+              ).value,
+              child: FractionalTranslation(
+                translation: Tween<Offset>(
+                  begin: Offset(-0.25, 0.0),
+                  end: Offset.zero,
+                ).evaluate(animation),
+                child: frontTitle,
+              ),
+            ),
+          ],
+        )
+      ]),
     );
   }
 }
