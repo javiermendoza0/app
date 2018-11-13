@@ -16,6 +16,7 @@ dependencies:
   intl: ^0.15.7
   shrine_images: 1.0.0
   meta: ^1.1.6
+  fluttertoast: ^2.1.0
 
 
 dev_dependencies:

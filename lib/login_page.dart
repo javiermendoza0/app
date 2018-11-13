@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'auth.dart';
-import 'colores.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title, this.auth, this.onSignIn}) : super(key: key);
@@ -81,21 +81,21 @@ class _MyHomePageState extends State<LoginPage> {
       )),
       padded(
           child: TextFormField(
-        decoration: InputDecoration(
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(
           labelText: 'E-mail',
         ),
         validator: (value) => value.isEmpty ? 'Ingrese su e-mail' : null,
         onSaved: (value) => _email = value,
       )),
       padded(
-          child: TextFormField(
-        decoration: InputDecoration(
-
+          child: TextField(
+          decoration: InputDecoration(
           labelText: 'Contraseña',
         ),
         obscureText: true,
-        validator: (value) => value.isEmpty ? 'Ingrese la contraseña' : null,
-        onSaved: (value) => _password = value,
+     //   validator: (value) => value.isEmpty ? 'Ingrese la contraseña' : null,
+      //  onSaved: (value) => _password = value,
       )),
       _confContras(),
     ];
@@ -105,8 +105,7 @@ class _MyHomePageState extends State<LoginPage> {
     if (_formType != FormType.login) {
       return padded(
           child: TextFormField(
-
-        decoration: InputDecoration(
+            decoration: InputDecoration(
 
           labelText: 'Confirma la contraseña',
         ),
@@ -219,6 +218,8 @@ class _MyHomePageState extends State<LoginPage> {
         });
         print(e);
       }
+
+      Fluttertoast.showToast(msg: 'You are '+_authHint);
     } else {
       setState(() {
         _authHint = '';

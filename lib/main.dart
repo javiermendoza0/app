@@ -47,7 +47,8 @@ ThemeData _buildShrineTheme() {
     ),
 
     inputDecorationTheme: InputDecorationTheme(
-      border: CutCornersBorder(), // Replace code
+         border: CutCornersBorder(),
+    // border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10.0)))
     ),
 
     // TODO: Add the text themes (103)
