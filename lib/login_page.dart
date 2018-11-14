@@ -81,21 +81,24 @@ class _MyHomePageState extends State<LoginPage> {
       )),
       padded(
           child: TextFormField(
+
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
-          labelText: 'E-mail',
+          labelText: 'Correo',
+          labelStyle: Theme.of(context).textTheme.display1,
         ),
         validator: (value) => value.isEmpty ? 'Ingrese su e-mail' : null,
         onSaved: (value) => _email = value,
       )),
       padded(
-          child: TextField(
+          child: TextFormField(
           decoration: InputDecoration(
           labelText: 'Contraseña',
+          labelStyle: Theme.of(context).textTheme.display1
         ),
         obscureText: true,
-     //   validator: (value) => value.isEmpty ? 'Ingrese la contraseña' : null,
-      //  onSaved: (value) => _password = value,
+        validator: (value) => value.isEmpty ? 'Ingrese la contraseña' : null,
+        onSaved: (value) => _password = value,
       )),
       _confContras(),
     ];
@@ -106,8 +109,8 @@ class _MyHomePageState extends State<LoginPage> {
       return padded(
           child: TextFormField(
             decoration: InputDecoration(
-
-          labelText: 'Confirma la contraseña',
+            labelStyle: Theme.of(context).textTheme.display1,
+            labelText: 'Confirma la contraseña',
         ),
         obscureText: true,
         validator: (value) => value.isEmpty ? 'Ingrese la contraseña' : null,

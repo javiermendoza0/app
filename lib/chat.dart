@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 
 void main() {
-  runApp(chat());
+  runApp(ChatScreen());
 }
 
 final ThemeData kIOSTheme = new ThemeData(
@@ -13,28 +13,17 @@ final ThemeData kIOSTheme = new ThemeData(
 );
 
 final ThemeData kDefaultTheme = new ThemeData(
-  primarySwatch: Colors.purple,
+  //primarySwatch: Colors.purple,
   accentColor: Colors.orangeAccent[400],
 );
 
-const String _name = "Your Name";
-
-class chat extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      theme: defaultTargetPlatform == TargetPlatform.iOS //new
-          ? kIOSTheme //new
-          : kDefaultTheme,
-      home: new ChatScreen(),
-    );
-  }
-}
+const String _name = "Javier mendoza";
 
 class ChatMessage extends StatelessWidget {
   ChatMessage({this.text, this.animationController});
   final String text;
   final AnimationController animationController;
+
   @override
   Widget build(BuildContext context) {
     return new SizeTransition(
@@ -74,6 +63,8 @@ class ChatMessage extends StatelessWidget {
 }
 
 class ChatScreen extends StatefulWidget {
+
+
   @override
   State createState() => new ChatScreenState();
 }
@@ -95,7 +86,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Friendlychat"), //modified
+        title: new Text("Chat"), //modified
         elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
       ),
       body: new Container(
@@ -114,9 +105,11 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                   itemCount: _messages.length, //new
                 ), //new
               ), //new
-              new Divider(height: 1.0), //new
+              new Divider(
+                height: 4.0,
+                color: Colors.grey[500],
+              ), //new
               new Container(
-                //new
                 decoration:
                     new BoxDecoration(color: Theme.of(context).cardColor), //new
                 child: _buildTextComposer(), //modified
@@ -128,7 +121,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                   //new
                   border: new Border(
                     //new
-                    top: new BorderSide(color: Colors.grey[200]), //new
+                    top: new BorderSide(color: Colors.grey[400]), //new
                   ), //new
                 ) //new
               : null),
@@ -143,18 +136,23 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         child: new Row(
           children: <Widget>[
             new Flexible(
-              child: new TextField(
-                controller: _textController,
-                onChanged: (String text) {
-                  //new
-                  setState(() {
+              child: Center(
+                child: new TextField(
+                  controller: _textController,
+                  onChanged: (String text) {
                     //new
-                    _isComposing = text.length > 0; //new
-                  }); //new
-                }, //new
-                onSubmitted: _handleSubmitted,
-                decoration:
-                    new InputDecoration.collapsed(hintText: "Send a message"),
+                    setState(() {
+                      //new
+                      _isComposing = text.length > 0; //new
+                    }); //new
+                  }, //new
+                  onSubmitted: _handleSubmitted,
+                  decoration: new InputDecoration.collapsed(
+                      hintText: "Escribe un mensaje...",
+                      hintStyle: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                      )),
+                ),
               ),
             ),
             new Container(
@@ -163,7 +161,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                     ? //modified
                     new CupertinoButton(
                         //new
-                        child: new Text("Send"), //new
+                        child: new Text("Enviar"), //new
                         onPressed: _isComposing //new
                             ? () => _handleSubmitted(_textController.text) //new
                             : null,
@@ -183,21 +181,23 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   }
 
   void _handleSubmitted(String text) {
-    _textController.clear();
-    setState(() {
-      //new
-      _isComposing = false; //new
-    }); //new
-    ChatMessage message = new ChatMessage(
-      text: text,
-      animationController: new AnimationController(
-        duration: new Duration(milliseconds: 700),
-        vsync: this,
-      ),
-    );
-    setState(() {
-      _messages.insert(0, message);
-    });
-    message.animationController.forward();
+    if (text.isNotEmpty) {
+      _textController.clear();
+      setState(() {
+        //new
+        _isComposing = false; //new
+      }); //new
+      ChatMessage message = new ChatMessage(
+        text: text,
+        animationController: new AnimationController(
+          duration: new Duration(milliseconds: 300),
+          vsync: this,
+        ),
+      );
+      setState(() {
+        _messages.insert(0, message);
+      });
+      message.animationController.forward();
+    }
   }
 }

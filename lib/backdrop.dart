@@ -4,6 +4,7 @@ import 'model/product.dart';
 import 'auth.dart';
 import 'colores.dart';
 import 'chat.dart';
+import 'login.dart';
 
 // TODO: Add velocity constant (104)
 const double _kFlingVelocity = 2.0;
@@ -154,7 +155,7 @@ class _BackdropState extends State<Backdrop>
           onPressed: () {
            Navigator.push(
               context,
-              MaterialPageRoute(builder: (BuildContext context) => chat()),
+              MaterialPageRoute(builder: (BuildContext context) => ChatScreen()),
             );
           },
         ),
